@@ -10,7 +10,6 @@ class IncludeDirectivesTest < ActiveSupport::TestCase
       {
         include_related: {
           posts: {
-            include: true,
             include_related:{}
           }
         }
@@ -25,15 +24,12 @@ class IncludeDirectivesTest < ActiveSupport::TestCase
       {
         include_related: {
           posts: {
-            include: true,
             include_related:{}
           },
           comments: {
-            include: true,
             include_related:{}
           },
           expense_entries: {
-            include: true,
             include_related:{}
           }
         }
@@ -48,10 +44,8 @@ class IncludeDirectivesTest < ActiveSupport::TestCase
       {
         include_related: {
           posts: {
-            include: true,
             include_related:{
               comments: {
-                include: true,
                 include_related:{}
               }
             }
@@ -68,10 +62,8 @@ class IncludeDirectivesTest < ActiveSupport::TestCase
       {
         include_related: {
           posts: {
-            include: true,
             include_related:{
               comments: {
-                include: true,
                 include_related:{}
               }
             }
@@ -88,13 +80,10 @@ class IncludeDirectivesTest < ActiveSupport::TestCase
       {
         include_related: {
           posts: {
-            include: true,
             include_related:{
               comments: {
-                include: true,
                 include_related:{
                   tags: {
-                    include: true,
                     include_related:{}
                   }
                 }

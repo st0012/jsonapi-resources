@@ -44,7 +44,7 @@ module JSONAPI
       path.segments.each do |segment|
         relationship_name = segment.relationship.name.to_sym
 
-        current[:include_related][relationship_name] ||= { include: true, include_related: {} }
+        current[:include_related][relationship_name] ||= { include_related: {} }
         current = current[:include_related][relationship_name]
       end
 
