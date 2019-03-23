@@ -407,7 +407,7 @@ module JSONAPI
         # Avoid hitting the database again for values already pre-loaded
         if assoc.respond_to?(:loaded?) and assoc.loaded?
           assoc.map do |obj|
-            [obj.type.underscore.pluralize, obj.id]
+            [obj._model.type.underscore.pluralize, obj.id]
           end
         else
           assoc.pluck(:type, :id).map do |type, id|
