@@ -398,27 +398,31 @@ module JSONAPI
       include_filters = include_config[:include_filters] if include_config
       options = { filters: include_filters || {} }
 
-      linkage_types_and_values = if source.preloaded_fragments.has_key?(format_key(relationship.name))
-        source.preloaded_fragments[format_key(relationship.name)].map do |_, resource|
-          [relationship.type, resource.id]
-        end
-      elsif relationship.polymorphic?
-        assoc = source.public_send("records_for_#{relationship.name}", options)
-        # Avoid hitting the database again for values already pre-loaded
-        if assoc.respond_to?(:loaded?) and assoc.loaded?
-          assoc.map do |obj|
-            [obj._model.type.underscore.pluralize, obj.id]
+      linkage_types_and_values =
+        if source.preloaded_fragments.has_key?(format_key(relationship.name))
+          source.preloaded_fragments[format_key(relationship.name)].map do |_, resource|
+            [relationship.type, resource.id]
           end
         else
-          assoc.pluck(:type, :id).map do |type, id|
-            [type.underscore.pluralize, id]
+          assoc = source.public_send("records_for_#{relationship.name}", options)
+
+          if relationship.polymorphic?
+            # Avoid hitting the database again for values already pre-loaded
+            if assoc.try(:loaded?)
+              assoc.map do |obj|
+                [obj.type.underscore.pluralize, obj.id]
+              end
+            else
+              assoc.pluck(:type, :id).map do |type, id|
+                [type.underscore.pluralize, id]
+              end
+            end
+          else
+            assoc.ids.map do |id|
+              [relationship.type, id]
+            end
           end
         end
-      else
-        source.public_send(relationship.name, options).map do |value|
-          [relationship.type, value.id]
-        end
-      end
 
       linkage_types_and_values.each do |type, value|
         if type && value
